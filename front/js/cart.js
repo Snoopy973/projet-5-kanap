@@ -72,10 +72,10 @@ cartItemPrice.innerHTML = produit.price +"€";
 const cartItemDelete = document.createElement ("div");
 document.querySelector(".article");
 cartItem.appendChild(cartItemDelete);
-cartItemDelete.className = ("cart__item__delete")
+cartItemDelete.className = ("cart__item__content__settings__delete")
 
 const cartItemDeleteP= document.createElement ("p");
-document.querySelector (".cart__item__delete")
+document.querySelector (".cart__item____content__settings__delete")
 cartItemDelete.appendChild(cartItemDeleteP);
 cartItemDeleteP.innerHTML= "Supprimer"
 cartItemDeleteP.className = "deleteItem"
@@ -91,11 +91,13 @@ function checkDelete(){
         const color = item.dataset.color; /* color de l'item*/
         let panier = getPanierLS();/* récuperation panier*/
         // supprime le id et color dont le bouton a ete cliqué
-        panier = panier.filter(p => p.produit._id != id && p.produit_panier.color != color);/* on prend tout ceux qui sont diffèrents de l'article*/
+        panier = panier.filter(p => p.id != id && p.color != color);/* on prend tout ceux qui sont diffèrents de l'article*/
         savePanierLS(panier); /*fonction pour sauver le panier*/
         window.location.reload();
-        console.log("deleteItem" + panier)
+        console.log (checkDelete)
+       
     }        
+    checkDelete();
   });
 
 }
