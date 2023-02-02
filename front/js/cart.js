@@ -27,61 +27,68 @@ console.log (urlKanap);
  
 /* Je vais chercher les informations du local Storage pour affichage dans le DOM */ 
 function afficheProduit(produit,produit_panier){
-const cartItem = document.createElement("article");
-  document.getElementById("cart__items").appendChild(cartItem)
+  const myId = document.getElementById('cart__items'); 
+  // creation article //
+  const myArticle = document.createElement("article");
+  myArticle.classList.add('cart__item');
+  myArticle.dataset.id= produit._id;           
+  myArticle.dataset.color= produit_panier.color;                                
+  // creation du lien sur article
+  myId.appendChild(myArticle);
+  // div 
+  const myDiv = document.createElement("div");
+  myDiv.classList.add('cart__item__img');
+  // creation du lien sur article
+  myArticle.appendChild(myDiv);
+  const img = document.createElement("img");
+  myArticle.appendChild(img);
+  img.src=produit.imageUrl
+  img.alt = produit.altTxt+", "+produit.name;  
+  myDiv.appendChild(img);
+  const myDiv2 = document.createElement("div");
+  myDiv2.classList.add('cart__item__content');
+  myArticle.appendChild(myDiv2);
+  const myDiv3 = document.createElement("div");
+  myDiv3.classList.add('cart__item__content__description');
+  myDiv2.appendChild(myDiv3);
+  const myH2 = document.createElement("h2");
+  myH2.h2 = produit.name;
+  myH2.append(myH2.h2);
+  myDiv3.appendChild(myH2);
+  const myP1 = document.createElement("p");
+  myP1.p = produit_panier.color;                                       
+  myP1.append(myP1.p);
+  myDiv3.appendChild(myP1);
+  const myP2 = document.createElement("p");
+  myP2.innerHTML = produit.price+ '€';
+  myDiv3.appendChild(myP2);
+  const myDiv4 = document.createElement("div");
+  myDiv4.classList.add('cart__item__content__settings');
+  myDiv2.appendChild(myDiv4);
+  const myDiv5 = document.createElement("div");
+  myDiv5.classList.add('cart__item__content__settings__quantity');
+  myDiv4.appendChild(myDiv5);
+  const myQuantite = document.createElement("p");
+  myQuantite.innerText = 'Qté: ';                    
+  myDiv5.appendChild(myQuantite);
+  const myInput= document.createElement("input");                              
+  myInput.type = "number";
+  myInput.classList.add('itemQuantity');
+  myInput.name = "itemQuantity";
+  myInput.min = "1";
+  myInput.max = "100";
+  myInput.value = produit_panier.quantite; 
+  myInput.innerHTML = myInput.value;                          
+  myDiv5.appendChild(myInput);
+  const myDiv6 = document.createElement("div");
+  myDiv6.classList.add('cart__item__content__settings__delete');
+  const myDeleteQuantite = document.createElement("p");
+  myDeleteQuantite.classList.add('deleteItem');
+  myDiv6.appendChild(myDeleteQuantite);
+  myDeleteQuantite.innerText= "Supprimer";
+  myDiv4.appendChild(myDiv6);}
 
-  cartItem.className = ("cart__item")
-  cartItem.dataset.color = produit_panier.color;
-  cartItem.dataset.id= produit._id;
-
-const cartItemImg = document.createElement("div");
-document.querySelector(".cart__item").appendChild(cartItemImg);
-cartItemImg.setAttribute ("class", "cart__item__img");
-
-
-
-const img = document.createElement("img")
-document.querySelector (".cart__item__img").appendChild(img);
-img.src= produit.imageUrl; 
-
-const cartItemContent = document.createElement ("div");
-document.querySelector(".article");
-cartItem.appendChild(cartItemContent)
-cartItemContent.className = ("cart__item__content");
-
-const cartItemDescription = document.createElement("div");
-document.getElementsByClassName("cart__item__content");cartItemContent.appendChild(cartItemDescription);
-cartItemDescription.className=("cart___item__description");
-
-
-const productName= document.createElement("h2");
-document.getElementsByClassName("cart__item__description");
-cartItemDescription.appendChild(productName);
-productName.innerHTML=produit.name;
-
-const cartItemColor = document.createElement("p");
-document.getElementsByClassName ("cart__item__description");
-cartItemDescription.appendChild(cartItemColor);
-cartItemColor.innerHTML=produit_panier.color;
-
-const cartItemPrice = document.createElement ("p");
-document.getElementsByClassName ("cart__item__description");
-cartItemDescription.appendChild(cartItemPrice);
-cartItemPrice.innerHTML = produit.price +"€";
-
-const cartItemDelete = document.createElement ("div");
-document.querySelector(".article");
-cartItem.appendChild(cartItemDelete);
-cartItemDelete.className = ("cart__item__content__settings__delete")
-
-const cartItemDeleteP= document.createElement ("p");
-document.querySelector (".cart__item____content__settings__delete")
-cartItemDelete.appendChild(cartItemDeleteP);
-cartItemDeleteP.innerHTML= "Supprimer"
-cartItemDeleteP.className = "deleteItem"
-}
-
-
+  
 /* fonction de suppression dans panier*/
 function checkDelete(){
   document.addEventListener('click',(event) =>{
