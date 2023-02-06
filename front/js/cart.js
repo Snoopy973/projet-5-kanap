@@ -88,7 +88,7 @@ function afficheProduit(produit,produit_panier){
   myDeleteQuantite.innerText= "Supprimer";
   myDiv4.appendChild(myDiv6);}
 
-  
+
 /* fonction de suppression dans panier*/
 function checkDelete(){
   document.addEventListener('click',(event) =>{
@@ -104,14 +104,59 @@ function checkDelete(){
         console.log (checkDelete)
        
     }        
-    checkDelete();
+    
   });
 
 }
+checkDelete();
 
   function savePanierLS(panier){
-    localStorage.setItem("panier",JSON.stringify(panier));
+    localStorage.setItem("produit",JSON.stringify(panier));
     if (panier == undefined){
       panier = [];
     }
   }
+
+  function checkQuantity() {
+    const formQuantity = document.getElementById("cart__items");
+    formQuantity.addEventListener('change',(event)=>{
+
+      if (event.target.tagName === "INPUT"){ 
+      const item = event.target.closest (".cart__item");
+      const id = item.dataset.id;
+      const color = item.dataset.color;
+      newQuantity= event.target.value;
+      let panier = getPanierLS ();
+      let foundProduct = panier.find(p=>p.id == id && p.color == color);
+      if (foundProduct != undefined){
+      if (newQuantity >100 ||newQuantity <=0){
+      alert ("Quantité entre 1 et 100");
+      event.target.value = foundProduct.quantity;
+      } else {
+        foundProduct.quantity = parseInt (newQuantity);
+        savePanierLS(panier);
+        window.location.reload();
+
+        console.log (checkQuantity)
+      }
+    }}});}
+checkQuantity();
+
+function totalArticles(){
+let totalItems = 0;
+let totalProducts=0;
+for (e in panier){
+  const newQuantity = parseInt (panier[e].quantity)
+  totalItems+=newQuantity;
+  const newPrices = parseInt(panier[e].quantity)*produit.price;
+  totalProducts+=newPrices;
+}
+const totalQuantity = document.getElementById('totalQuantity');
+  totalQuantity.textContent = totalItems;
+  const totalPrice = document.getElementById('totalPrice');
+  totalPrice.textContent= totalProducts;
+  
+
+}
+
+totalArticles();
