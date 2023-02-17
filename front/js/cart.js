@@ -10,7 +10,8 @@ function getPanierLS(){
   
   panier = getPanierLS();
 
-
+let quantityTotals = 0;
+let priceTotals=0;
 for (let i=0;i<panier.length;i++) {
   const canape = panier [i];
 
@@ -22,7 +23,15 @@ console.log (urlKanap);
             return res.json();
           }
         })
-        .then((data) => {afficheProduit (data,canape);})
+        .then((data) => {afficheProduit (data,canape);
+          /*totalprix = Number(data.price) * Number(canape.quantity);
+          totalquantité = Number(canape.quantity);*/
+           quantityTotals += parseInt(canape.quantity);
+           priceTotals += data.price * parseInt(canape.quantity);
+           document.getElementById("totalQuantity").innerHTML = quantityTotals;
+           document.getElementById("totalPrice").innerHTML = priceTotals;
+        
+        })
       }
  
 /* Je vais chercher les informations du local Storage pour affichage dans le DOM */ 
@@ -142,21 +151,104 @@ checkDelete();
     }}});}
 checkQuantity();
 
+
+/* Afficher Total prix articles et total quantité */ 
 function totalArticles(){
 let totalItems = 0;
 let totalProducts=0;
-for (e in panier){
-  const newQuantity = parseInt (panier[e].quantity)
-  totalItems+=newQuantity;
-  const newPrices = parseInt(panier[e].quantity)*produit.price;
-  totalProducts+=newPrices;
-}
+for (e in panier){let urlKanap = "http://localhost:3000/api/products/"+ canape.id;
+console.log (urlKanap);
+      fetch(urlKanap)
+        .then(function (res) {
+          if (res.ok) {
+            return res.json();
+          }
+        })
+        .then((data) => {afficheProduit (data,canape);
+      
+    
+})
+          
+
+  
+ 
 const totalQuantity = document.getElementById('totalQuantity');
   totalQuantity.textContent = totalItems;
-  const totalPrice = document.getElementById('totalPrice');
-  totalPrice.textContent= totalProducts;
+  const totalPrix = document.getElementById('totalPrice');
+  totalPrix.replaceChildren(totalprice)
   
+}}
 
+
+const myForm = document.querySelector(".cart__order__form");
+const email = document.querySelector('#email');
+const sendorder = document.getElementById('order');
+
+sendorder.addEventListener ('click',   function(){ 
+  validEmail ();
+  validFirstname();
+  validLastname();
+  validAddress();
+  validCity();
+
+});
+function validEmail (){
+  const emailValue = email.value.trim();
+  const emailMessage = document.querySelector('#emailErrorMsg');
+if (!emailValue.match (
+  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
+){ 
+  emailMessage.textContent= "Email non conforme";
+}
+else {emailMessage.textContent=""};
+console.log (validEmail)
 }
 
-totalArticles();
+function validFirstname (){
+let firstNameMessage = document.querySelector("#firstNameErrorMsg");
+let firstNameValue = firstName.value.trim();
+ if (!firstNameValue.match(/^[a-zA-Z-\s]+$/)) {
+  firstNameMessage.textContent="Ne doit pas contenir de chiffres";
+
+}else { firstNameMessage.textContent=""}}
+
+function validLastname (){
+  let lastNameMessage = document.querySelector("#lastNameErrorMsg");
+  let lastNameValue = lastName.value.trim();
+   if (!lastNameValue.match(/^[a-zA-Z-\s]+$/)) {
+    lastNameMessage.textContent="Ne doit pas contenir de chiffres";
+  
+  }else { lastNameMessage.textContent=""}}
+  
+function validAddress() { 
+  let addressNameMessage = document.querySelector('#addressErrorMsg');
+  const addressNameValue = address.value.trim();
+
+  // Si la valeur du champ "Adresse" est vide
+  if (addressNameValue === '') {
+    // Affiche un message d'erreur
+    addressNameMessage.textContent = 'Ne peut pas être vide';
+  }
+  // Si aucune erreur n'est détectée
+  else {
+    // Efface le message d'erreur
+    addressNameMessage.textContent = '';
+  }
+}
+
+function validCity() {
+  // Récupère l'élément HTML qui affiche le message d'erreur pour le champ de saisie de la ville
+  let cityNameMessage = document.querySelector('#cityErrorMsg');
+  const cityNameValue = city.value.trim();
+
+  // Si la valeur du champ de saisie de la ville est vide
+  if (cityNameValue === '') {
+    // Affiche un message d'erreur indiquant que le champ de saisie de la ville ne peut pas être vide
+    cityNameMessage.textContent = 'Ne peut pas être vide';
+  } else {
+    // Si la valeur du champ de saisie de la ville n'est pas vide, efface le message d'erreur
+    cityNameMessage.textContent = '';
+  }
+}
+
+
