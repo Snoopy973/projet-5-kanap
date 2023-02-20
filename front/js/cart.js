@@ -16,7 +16,7 @@ for (let i=0;i<panier.length;i++) {
   const canape = panier [i];
 
 let urlKanap = "http://localhost:3000/api/products/"+ canape.id;
-console.log (urlKanap);
+
       fetch(urlKanap)
         .then(function (res) {
           if (res.ok) {
@@ -110,7 +110,7 @@ function checkDelete(){
         panier = panier.filter(p => p.id != id && p.color != color);/* on prend tout ceux qui sont diffèrents de l'article*/
         savePanierLS(panier); /*fonction pour sauver le panier*/
         window.location.reload();
-        console.log (checkDelete)
+  
        
     }        
     
@@ -146,7 +146,7 @@ checkDelete();
         savePanierLS(panier);
         window.location.reload();
 
-        console.log (checkQuantity)
+        
       }
     }}});}
 checkQuantity();
@@ -157,7 +157,7 @@ function totalArticles(){
 let totalItems = 0;
 let totalProducts=0;
 for (e in panier){let urlKanap = "http://localhost:3000/api/products/"+ canape.id;
-console.log (urlKanap);
+
       fetch(urlKanap)
         .then(function (res) {
           if (res.ok) {
@@ -181,10 +181,16 @@ const totalQuantity = document.getElementById('totalQuantity');
 
 
 const myForm = document.querySelector(".cart__order__form");
-const email = document.querySelector('#email');
-const sendorder = document.getElementById('order');
+const formEmail = document.querySelector('#email');
+const formFirst = document.querySelector('#firstName');
+const formLast = document.querySelector("#lastName");
+const formCity = document.querySelector("#address");
 
-sendorder.addEventListener ('click',   function(){ 
+
+
+const sendOrder = document.getElementById('order');
+
+sendOrder.addEventListener ('click',   function(){ 
   validEmail ();
   validFirstname();
   validLastname();
@@ -195,19 +201,24 @@ sendorder.addEventListener ('click',   function(){ 
 function validEmail (){
   const emailValue = email.value.trim();
   const emailMessage = document.querySelector('#emailErrorMsg');
-if (!emailValue.match (
+if (emailValue ==="") { emailMessage.textContent="Ne peut pas être vide";}
+  
+  else if (!emailValue.match (
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
 ){ 
   emailMessage.textContent= "Email non conforme";
 }
 else {emailMessage.textContent=""};
-console.log (validEmail)
+
 }
 
 function validFirstname (){
 let firstNameMessage = document.querySelector("#firstNameErrorMsg");
 let firstNameValue = firstName.value.trim();
- if (!firstNameValue.match(/^[a-zA-Z-\s]+$/)) {
+ if(firstNameValue==="") 
+ {firstNameMessage.textContent= " Ne peut pas être vide"}
+ else if
+ (!firstNameValue.match(/^[a-zA-Z-\s]+$/)) {
   firstNameMessage.textContent="Ne doit pas contenir de chiffres";
 
 }else { firstNameMessage.textContent=""}}
@@ -215,7 +226,9 @@ let firstNameValue = firstName.value.trim();
 function validLastname (){
   let lastNameMessage = document.querySelector("#lastNameErrorMsg");
   let lastNameValue = lastName.value.trim();
-   if (!lastNameValue.match(/^[a-zA-Z-\s]+$/)) {
+   if (lastNameValue ==="") {lastNameMessage.textContent="Ne peut pas être vide"}
+   else if
+   (!lastNameValue.match(/^[a-zA-Z-\s]+$/)) {
     lastNameMessage.textContent="Ne doit pas contenir de chiffres";
   
   }else { lastNameMessage.textContent=""}}
@@ -250,5 +263,55 @@ function validCity() {
     cityNameMessage.textContent = '';
   }
 }
+sendOrder.addEventListener ("click", function(e)
+{e.preventDefault();
 
 
+const contact = {
+  firstName : $(formFirst.value),
+  lastName : $(formLast.value),
+  address: $(formCity.value),
+  email : $(formEmail.value),
+
+}
+
+let panier = localStorage.getItem("contact", JSON.stringify(contact));
+
+let finalCart = []
+for (i=0; i<panier.length; i++ ){
+  finalCart.push (panier[i].id)
+
+  console.log (panier)
+}
+
+function orderProduct(order) {
+  // Appel de l'API avec la méthode POST
+  fetch('http://localhost:3000/api/products/order', {
+    method: 'POST',
+    // Indication à l'API que les données envoyées sont au format JSON
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    // Envoi de l'objet JSON
+    body: JSON.stringify(contact),
+  })
+    .then(function (res) {
+      // Vérification que la réponse est OK
+      if (res.ok) {
+        return res.json();
+      }
+    })
+    // Récupération de l'identifiant de commande dans la réponse
+    .then(function (value) {
+      window.location = `./confirmation.html?orderId=${value.orderId}`;
+      localStorage.clear();
+    })
+    // Gestion d'une erreur lors de l'appel de l'API
+    .catch(function (err) {
+      alert("Votre commande n'a pas pu être envoyée");
+    });
+}
+
+
+})
