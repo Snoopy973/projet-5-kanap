@@ -87,7 +87,8 @@ function afficheProduit(produit,produit_panier){
   myInput.min = "1";
   myInput.max = "100";
   myInput.value = produit_panier.quantite; 
-  myInput.innerHTML = myInput.value;                          
+  myInput.innerHTML = myInput.value;
+  myInput.value = produit_panier.quantity
   myDiv5.appendChild(myInput);
   const myDiv6 = document.createElement("div");
   myDiv6.classList.add('cart__item__content__settings__delete');
@@ -148,6 +149,8 @@ checkDelete();
 
         
       }
+
+
     }}});}
 checkQuantity();
 
@@ -170,8 +173,7 @@ for (e in panier){let urlKanap = "http://localhost:3000/api/products/"+ canape.i
 })
           
 
-  
- 
+
 const totalQuantity = document.getElementById('totalQuantity');
   totalQuantity.textContent = totalItems;
   const totalPrix = document.getElementById('totalPrice');
@@ -263,19 +265,35 @@ function validCity() {
     cityNameMessage.textContent = '';
   }
 }
-sendOrder.addEventListener ("click", function(e)
-{e.preventDefault();
+myForm.addEventListener('submit', function(e) {
+  e.preventDefault();
+  let isError = false;
+  
+  if(!validFirstName()){
+      e.preventDefault();
+      isError = true;
+  }
 
+  if(!validLastName()){
+      e.preventDefault();
+      isError = true;
+  }
 
-const contact = {
-  firstName : $(formFirst.value),
-  lastName : $(formLast.value),
-  address: $(formCity.value),
-  email : $(formEmail.value),
+  if(!validAddress()){
+      e.preventDefault();
+      isError = true;
+  }
 
-}
+  if(!validCity()){
+      e.preventDefault();
+      isError = true;
+  }
+  
+  if (isError) {
+      e.preventDefault();
+      return (false);
+  }
 
-let panier = localStorage.getItem("contact", JSON.stringify(contact));
 
 let finalCart = []
 for (i=0; i<panier.length; i++ ){
@@ -283,35 +301,42 @@ for (i=0; i<panier.length; i++ ){
 
   console.log (panier)
 }
+const order= {
+contact: {
+  firstName : $(formFirst.value),
+  lastName : $(formLast.value),
+  address: $(formCity.value),
+  email : $(formEmail.value),
 
-function orderProduct(order) {
-  // Appel de l'API avec la méthode POST
-  fetch('http://localhost:3000/api/products/order', {
+},
+urlKanap: panier}
+
+
+
+  // préparation des options du fetch
+  let fetchOptions = {
     method: 'POST',
-    // Indication à l'API que les données envoyées sont au format JSON
+    body: JSON.stringify(orderObject),
     headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    // Envoi de l'objet JSON
-    body: JSON.stringify(contact),
-  })
-    .then(function (res) {
-      // Vérification que la réponse est OK
-      if (res.ok) {
-        return res.json();
-      }
-    })
-    // Récupération de l'identifiant de commande dans la réponse
-    .then(function (value) {
-      window.location = `./confirmation.html?orderId=${value.orderId}`;
-      localStorage.clear();
-    })
-    // Gestion d'une erreur lors de l'appel de l'API
-    .catch(function (err) {
-      alert("Votre commande n'a pas pu être envoyée");
-    });
+        "Content-Type": "application/json"
+    }
+};
+
+if (order.urlKanap.length == 0) {
+    alert("Votre panier est vide")
+} else {
+
+    fetch("http://localhost:3000/api/products/order", fetchOptions)
+        .then((response) => {
+            return response.json();
+        })
+        .then((order) => {
+            localStorage.clear();
+            document.location.href = `./confirmation.html?orderId=${order.orderId}`;
+        })
+        .catch((err) => {
+            alert(err.message)
+            console.log(err)
+        })
 }
-
-
-})
+});
