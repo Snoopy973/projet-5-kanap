@@ -192,14 +192,15 @@ const formCity = document.querySelector("#address");
 
 const sendOrder = document.getElementById('order');
 
-sendOrder.addEventListener ('click',   function(){ 
+
+/*sendOrder.addEventListener ('click',   function(){*/ 
   validEmail ();
   validFirstname();
   validLastname();
   validAddress();
   validCity();
 
-});
+/*});*/
 function validEmail (){
   const emailValue = email.value.trim();
   const emailMessage = document.querySelector('#emailErrorMsg');
@@ -265,7 +266,7 @@ function validCity() {
     cityNameMessage.textContent = '';
   }
 }
-myForm.addEventListener('submit', function(e) {
+sendOrder.addEventListener('click', function(e) {
   e.preventDefault();
   let isError = false;
   
@@ -294,12 +295,12 @@ myForm.addEventListener('submit', function(e) {
       return (false);
   }
 
+  console.log ("onpasse")
 
 let finalCart = []
 for (i=0; i<panier.length; i++ ){
   finalCart.push (panier[i].id)
 
-  console.log (panier)
 }
 const order= {
 contact: {
@@ -311,12 +312,12 @@ contact: {
 },
 urlKanap: panier}
 
-
+console.log("order"+order)
 
   // préparation des options du fetch
   let fetchOptions = {
     method: 'POST',
-    body: JSON.stringify(orderObject),
+    body: JSON.stringify(order),
     headers: {
         "Content-Type": "application/json"
     }
@@ -331,7 +332,9 @@ if (order.urlKanap.length == 0) {
             return response.json();
         })
         .then((order) => {
-            localStorage.clear();
+
+     
+            /*localStorage.clear();*/
             document.location.href = `./confirmation.html?orderId=${order.orderId}`;
         })
         .catch((err) => {
