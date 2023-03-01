@@ -182,11 +182,12 @@ const totalQuantity = document.getElementById('totalQuantity');
 }}
 
 
-const myForm = document.querySelector(".cart__order__form");
-const formEmail = document.querySelector('#email');
-const formFirst = document.querySelector('#firstName');
-const formLast = document.querySelector("#lastName");
-const formCity = document.querySelector("#address");
+var formFirst = document.getElementById('firstName');
+var formLast = document.getElementById('lastName');
+var formAdress = document.getElementById('address');
+var formCity = document.getElementById('city');
+var formMail = document.getElementById('email');
+
 
 
 
@@ -266,16 +267,16 @@ function validCity() {
     cityNameMessage.textContent = '';
   }
 }
-sendOrder.addEventListener('click', function(e) {
+sendOrder.addEventListener('click', function(e){
   e.preventDefault();
   let isError = false;
   
-  if(!validFirstName()){
+  if(!validFirstname()){
       e.preventDefault();
       isError = true;
   }
 
-  if(!validLastName()){
+  if(!validLastname()){
       e.preventDefault();
       isError = true;
   }
@@ -303,13 +304,14 @@ for (i=0; i<panier.length; i++ ){
 
 }
 const order= {
-contact: {
-  firstName : $(formFirst.value),
-  lastName : $(formLast.value),
-  address: $(formCity.value),
-  email : $(formEmail.value),
-
-},
+  contact: {
+    firstName: `${formFirst.value}`,
+    lastName: `${formLast.value}`,
+    address: `${formAdress.value}`,
+    city: `${formCity.value}`,
+    email: `${formMail.value}`,
+  
+  },
 urlKanap: panier}
 
 console.log("order"+order)
